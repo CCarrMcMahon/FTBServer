@@ -13,5 +13,3 @@ class DatabaseConfig {
         $this->database = 'feed_the_beast';
     }
 }
-
-?>
