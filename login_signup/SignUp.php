@@ -23,13 +23,13 @@ function signUp($email, $username, $password) {
 
 # Make sure all data has been sent over
 if (!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password'])) {
-    echo "All fields are required.\n";
+    echo "All fields are required.";
     exit();
 }
 
 # Check if we could connect to the database
 if (!$db->connect()) {
-    echo "Error: Could not connect to the Database.\n";
+    echo "Error: Could not connect to the Database.";
     exit();
 }
 
@@ -37,5 +37,5 @@ if (!$db->connect()) {
 if (signUp($_POST['email'], $_POST['username'], $_POST['password'])) {
     echo "Successfully signed up.";
 } else {
-    echo "That email or username is already in use.\n";
+    echo "That email or username is already in use.";
 }

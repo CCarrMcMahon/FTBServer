@@ -17,20 +17,20 @@ function getFeeders($username) {
 
 # Make sure all data has been sent over
 if (!isset($_POST['username'])) {
-    echo "A username must be provided.\n";
+    echo "A username must be provided.";
     exit();
 }
 
 # Check if we could connect to the database
 if (!$db->connect()) {
-    echo "Error: Could not connect to the Database.\n";
+    echo "Error: Could not connect to the Database.";
     exit();
 }
 
 $feeders = getFeeders($_POST['username']);
 
 if (!$feeders) {
-    echo "Error: Failed to retrieve feeders.\n";
+    echo "Error: Failed to retrieve feeders.";
     exit();
 }
 
@@ -41,14 +41,14 @@ while ($loop < 20) {
     
     if ($row == null) {
         if ($loop == 0) {
-            echo "No feeders found.\n";
+            echo "No feeders found.";
         }
         
         exit();
     }
     
     if (!$row) {
-        echo "Error: Failed to retrieve next row.\n";
+        echo "Error: Failed to retrieve next row.";
         exit();
     }
     
