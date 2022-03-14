@@ -32,19 +32,19 @@ function logIn($username, $password) {
 
 # Make sure all data has been sent over
 if (!isset($_POST['username']) || !isset($_POST['password'])) {
-    echo "All fields are required.\n";
+    echo "All fields are required.";
     exit();
 }
 
 # Check if we could connect to the database
 if (!$db->connect()) {
-    echo "Error: Could not connect to the Database.\n";
+    echo "Error: Could not connect to the Database.";
     exit();
 }
 
 # Check if the username and password combination are in the database
 if (logIn($_POST['username'], $_POST['password'])) {
-    echo "Successfully logged in.\n";
+    echo "Successfully logged in.";
 } else {
-    echo "Your username or password is incorrect.\n";
+    echo "Your username or password is incorrect.";
 }
