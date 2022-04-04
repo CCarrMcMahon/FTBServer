@@ -29,7 +29,28 @@ class Database {
     }
 
     function prepareData($data) {
+        if ($this->mysqli == null) {
+            return;
+        }
+
         return mysqli_real_escape_string($this->mysqli, stripslashes(htmlspecialchars($data)));
-        # return mysqli_real_escape_string($this->mysqli, $data);
+    }
+
+    function runChecks($values) {
+        # Check if all post values are set
+        foreach ($values as $value) {
+            if (!isset($_POST[$value])) {
+                echo "All fields are required.";
+                return false;
+            }
+        }
+    
+        # Check if we could connect to the database
+        if (!$this->connect()) {
+            echo "Error: Could not connect to the Database.";
+            return false;
+        }
+
+        return true;
     }
 }

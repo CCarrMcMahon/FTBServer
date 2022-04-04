@@ -3,39 +3,25 @@
 require "Database.php";
 
 $db = new Database();
+$params = array('email', 'username', 'password');
 
-function signUp($email, $username, $password) {
-    global $db;
-    
-    $email = $db->prepareData($email);
-    $username = $db->prepareData($username);
-    
-    $password = password_hash($password, PASSWORD_DEFAULT);
+function signUp($db, $params) {
+    $email = $db->prepareData($_POST[$params[0]]);
+    $username = $db->prepareData($_POST[$params[1]]);
+    $password = password_hash($_POST[$params[2]], PASSWORD_DEFAULT);
     
     $query = "INSERT INTO `users` (`email`, `username`, `password`) VALUES ('{$email}', '{$username}', '{$password}')";
     
     if (mysqli_query($db->mysqli, $query)) {
-        return true;
+        echo "Successfully signed up.";
     } else {
-        return false;
+        echo "That email or username is already in use.";
     }
 }
 
-# Make sure all data has been sent over
-if (!isset($_POST['email']) || !isset($_POST['username']) || !isset($_POST['password'])) {
-    echo "All fields are required.";
+# Check to see if the parameters are set and the database is running
+if (!$db->runChecks($params)) {
     exit();
 }
 
-# Check if we could connect to the database
-if (!$db->connect()) {
-    echo "Error: Could not connect to the Database.";
-    exit();
-}
-
-# Check if the user signed up successfully
-if (signUp($_POST['email'], $_POST['username'], $_POST['password'])) {
-    echo "Successfully signed up.";
-} else {
-    echo "That email or username is already in use.";
-}
+signUp($db, $params);

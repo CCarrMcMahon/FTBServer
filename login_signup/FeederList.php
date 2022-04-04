@@ -3,59 +3,48 @@
 require "Database.php";
 
 $db = new Database();
+$params = array('owner');
 
 # Get a list of feeders owned by the user
-function getFeeders($username) {
-    global $db;
+function getFeeders($db, $params) {
+    $owner = $db->prepareData($_POST[$params[0]]);
     
-    $username = $db->prepareData($username);
+    $query = "SELECT * FROM `feeders` WHERE `owner` = '{$owner}'";
     
-    $query = "SELECT * FROM `feeders` WHERE `owner` = '{$username}'";
+    $feeders = mysqli_query($db->mysqli, $query);
+
+    if (!$feeders) {
+        echo "Error: Failed to retrieve feeders.";
+        exit();
+    }
     
-    return mysqli_query($db->mysqli, $query);
-}
-
-# Make sure all data has been sent over
-if (!isset($_POST['username'])) {
-    echo "A username must be provided.";
-    exit();
-}
-
-# Check if we could connect to the database
-if (!$db->connect()) {
-    echo "Error: Could not connect to the Database.";
-    exit();
-}
-
-$feeders = getFeeders($_POST['username']);
-
-if (!$feeders) {
-    echo "Error: Failed to retrieve feeders.";
-    exit();
-}
-
-$loop = 0;
-
-while ($loop < 20) {
-    $row = mysqli_fetch_assoc($feeders); # Get next instance of a row
-    
-    if ($row == null) {
-        if ($loop == 0) {
-            echo "No feeders found.";
+    for ($i = 0; $i < 20; $i++) {
+        $row = mysqli_fetch_assoc($feeders); # Get next instance of a row
+        
+        if ($row == null) {
+            if ($i == 0) {
+                echo "No feeders found.";
+            }
+            
+            exit();
         }
         
-        exit();
+        if (!$row) {
+            echo "Error: Failed to retrieve next row.";
+            exit();
+        }
+        
+        $mac = $row['mac'];
+        $name = $row['name'];
+        
+        echo "{$mac}\n{$name}\n";
     }
-    
-    if (!$row) {
-        echo "Error: Failed to retrieve next row.";
-        exit();
-    }
-    
-    $name = $row['name'];
-    $owner = $row['owner'];
-    
-    echo "{$name}\n";
-    
-    $loop++;
+
 }
+
+# Check to see if the parameters are set and the database is running
+if (!($db->runChecks($params))) {
+    exit();
+}
+
+getFeeders($db, $params);

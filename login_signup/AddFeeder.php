@@ -3,12 +3,13 @@
 require "Database.php";
 
 $db = new Database();
+$params = array('mac', 'owner', 'name');
 
 # Get a list of feeders owned by the user
-function addFeeder($mac, $owner, $name) {
-    global $db;
-    
-    $owner = $db->prepareData($owner);
+function addFeeder($db, $params) {
+    $mac = $_POST[$params[0]];
+    $owner = $db->prepareData($_POST[$params[1]]);
+    $name = $db->prepareData($_POST[$params[2]]);
     
     $query = "SELECT * FROM `feeders` WHERE `mac` = '{$mac}' AND `owner` = '{$owner}'";
     
@@ -35,16 +36,9 @@ function addFeeder($mac, $owner, $name) {
     }
 }
 
-# Make sure all data has been sent over
-if (!isset($_POST['mac']) || !isset($_POST['owner']) || !isset($_POST['name'])) {
-    echo "All fields are required.";
+# Check to see if the parameters are set and the database is running
+if (!$db->runChecks($params)) {
     exit();
 }
 
-# Check if we could connect to the database
-if (!$db->connect()) {
-    echo "Error: Could not connect to the Database.";
-    exit();
-}
-
-addFeeder($_POST['mac'], $_POST['owner'], $_POST['name']);
+addFeeder($db, $params);

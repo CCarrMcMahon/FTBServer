@@ -3,18 +3,18 @@
 require "Database.php";
 
 $db = new Database();
+$params = array('username', 'password');
 
 # Function to check if a provided username and password are in the database
-function logIn($username, $password) {
-    global $db;
-    
-    $username = $db->prepareData($username);
+function logIn($db, $params) {
+    $username = $db->prepareData($_POST[$params[0]]);
+    $password = $_POST[$params[1]];
     
     $query = "SELECT * FROM `users` WHERE `username` = '{$username}'";
     
     $result = mysqli_query($db->mysqli, $query);
     
-    if (mysqli_num_rows($result) == 0) {
+    if ($result->num_rows == 0) {
         return false;
     }
     
@@ -24,27 +24,15 @@ function logIn($username, $password) {
     $dbpassword = $row['password'];
     
     if ($dbusername == $username && password_verify($password, $dbpassword)) {
-        return true;
+        echo "Successfully logged in.";
     } else {
-        return false;
+        echo "Your username or password is incorrect.";
     }
 }
 
-# Make sure all data has been sent over
-if (!isset($_POST['username']) || !isset($_POST['password'])) {
-    echo "All fields are required.";
+# Check to see if the parameters are set and the database is running
+if (!$db->runChecks($params)) {
     exit();
 }
 
-# Check if we could connect to the database
-if (!$db->connect()) {
-    echo "Error: Could not connect to the Database.";
-    exit();
-}
-
-# Check if the username and password combination are in the database
-if (logIn($_POST['username'], $_POST['password'])) {
-    echo "Successfully logged in.";
-} else {
-    echo "Your username or password is incorrect.";
-}
+logIn($_POST['username'], $_POST['password']);
