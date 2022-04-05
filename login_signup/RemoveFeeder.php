@@ -3,15 +3,14 @@
 require "Database.php";
 
 $db = new Database();
-$params = array('mac', 'owner', 'name');
+$params = array('mac', 'owner');
 
 # Change the name of a feeder owned by the user
 function removeFeeder($db, $params) {
     $mac = $_POST[$params[0]];
     $owner = $db->prepareData($_POST[$params[1]]);
-    $name = $db->prepareData($_POST[$params[2]]);
 
-    $query = "DELETE FROM `feeders` WHERE `mac` = '{$mac}' AND `owner` = '{$owner}' AND `name` = '{$name}'";
+    $query = "DELETE FROM `feeders` WHERE `mac` = '{$mac}' AND `owner` = '{$owner}'";
 
     if (mysqli_query($db->mysqli, $query)) {
         echo "Successfully removed the feeder.";
