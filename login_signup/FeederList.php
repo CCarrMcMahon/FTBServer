@@ -9,7 +9,7 @@ $params = array('owner');
 function getFeeders($db, $params) {
     $owner = $db->prepareData($_POST[$params[0]]);
     
-    $query = "SELECT * FROM `feeders` WHERE `owner` = '{$owner}'";
+    $query = "SELECT * FROM `users_feeders` WHERE `owner` = '{$owner}'";
     
     $feeders = mysqli_query($db->mysqli, $query);
 
@@ -39,7 +39,8 @@ function getFeeders($db, $params) {
         
         echo "{$mac}\n{$name}\n";
     }
-
+    
+    exit();
 }
 
 # Check to see if the parameters are set and the database is running

@@ -11,15 +11,15 @@ function editName($db, $params) {
     $owner = $db->prepareData($_POST[$params[1]]);
     $name = $db->prepareData($_POST[$params[2]]);
 
-    $query = "UPDATE `feeders` SET `name` = '{$name}' WHERE `mac` = '{$mac}' AND `owner` = '{$owner}'";
+    $query = "UPDATE `users_feeders` SET `name` = '{$name}' WHERE `mac` = '{$mac}' AND `owner` = '{$owner}'";
 
     if (mysqli_query($db->mysqli, $query)) {
         echo "Successfully changed the name of the feeder.";
-        exit();
     } else {
         echo "Failed to change the name of the feeder.";
-        exit();
     }
+    
+    exit();
 }
 
 # Check to see if the parameters are set and the database is running
