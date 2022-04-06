@@ -10,15 +10,18 @@ function removeFeeder($db, $params) {
     $mac = $_POST[$params[0]];
     $owner = $db->prepareData($_POST[$params[1]]);
 
-    $query = "DELETE FROM `feeders` WHERE `mac` = '{$mac}' AND `owner` = '{$owner}'";
+    $query = "DELETE FROM `users_feeders` WHERE `mac` = '{$mac}' AND `owner` = '{$owner}'";
 
     if (mysqli_query($db->mysqli, $query)) {
         echo "Successfully removed the feeder.";
-        exit();
     } else {
         echo "Failed to remove the feeder.";
-        exit();
     }
+    
+    $query = "DELETE FROM `feeders` WHERE `mac` NOT IN (SELECT `mac` FROM `users_feeders`)";
+    
+    mysqli_query($db->mysqli, $query);
+    exit();
 }
 
 # Check to see if the parameters are set and the database is running
