@@ -15,6 +15,7 @@ function logIn($db, $params) {
     $result = mysqli_query($db->mysqli, $query);
     
     if ($result->num_rows == 0) {
+        echo "Unable to retrieve your account. Try again.";
         return false;
     }
     
@@ -31,8 +32,8 @@ function logIn($db, $params) {
 }
 
 # Check to see if the parameters are set and the database is running
-if (!$db->runChecks($params)) {
-    exit();
+if ($db->runChecks($params)) {
+    logIn($db, $params);
 }
 
-logIn($_POST['username'], $_POST['password']);
+

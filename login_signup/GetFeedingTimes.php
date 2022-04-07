@@ -20,10 +20,7 @@ function getFeedingTimes($db, $params) {
     $row = mysqli_fetch_assoc($feeding_times); # Get next instance of a row
     
     if ($row == null) {
-        if ($i == 0) {
-            echo "Error: Somehow that device is not in the database.";
-        }
-        
+        echo "Error: Somehow that device is not in the database.";
         exit();
     }
     
@@ -40,8 +37,6 @@ function getFeedingTimes($db, $params) {
 }
 
 # Check to see if the parameters are set and the database is running
-if (!$db->runChecks($params)) {
-    exit();
+if ($db->runChecks($params)) {
+    getFeedingTimes($db, $params);
 }
-
-getFeedingTimes($db, $params);

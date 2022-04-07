@@ -25,8 +25,6 @@ function removeFeeder($db, $params) {
 }
 
 # Check to see if the parameters are set and the database is running
-if (!$db->runChecks($params)) {
-    exit();
+if ($db->runChecks($params)) {
+    removeFeeder($db, $params);
 }
-
-removeFeeder($db, $params);
