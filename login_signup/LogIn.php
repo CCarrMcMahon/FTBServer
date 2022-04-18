@@ -3,19 +3,37 @@
 require "Database.php";
 
 $db = new Database();
+$params = array('username', 'password');
 
-if (isset($_POST['username']) && isset($_POST['password'])) {
-    if ($db->dbConnect()) {
-        if ($db->logIn("users", $_POST['username'], $_POST['password'])) {
-            echo "Successfully logged in.";
-        } else {
-            echo "Your username or password is incorrect.";
-        }
-    } else {
-        echo "Error: Could not connect to the Database.";
+# Function to check if a provided username and password are in the database
+function logIn($db, $params) {
+    $username = $db->prepareData($_POST[$params[0]]);
+    $password = $_POST[$params[1]];
+    
+    $query = "SELECT * FROM `users` WHERE `username` = '{$username}'";
+    
+    $result = mysqli_query($db->mysqli, $query);
+    
+    if ($result->num_rows == 0) {
+        echo "Unable to retrieve your account. Try again.";
+        return false;
     }
-} else {
-    echo "All fields are required.";
+    
+    $row = mysqli_fetch_assoc($result); # Get first instance of row
+    
+    $dbusername = $db->prepareData($row['username']);
+    $dbpassword = $row['password'];
+    
+    if ($dbusername == $username && password_verify($password, $dbpassword)) {
+        echo "Successfully logged in.";
+    } else {
+        echo "Your username or password is incorrect.";
+    }
 }
 
-?>
+# Check to see if the parameters are set and the database is running
+if ($db->runChecks($params)) {
+    logIn($db, $params);
+}
+
+

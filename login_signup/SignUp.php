@@ -3,19 +3,25 @@
 require "Database.php";
 
 $db = new Database();
+$params = array('email', 'username', 'password');
 
-if (isset($_POST['email']) && isset($_POST['username']) && isset($_POST['password'])) {
-    if ($db->dbConnect()) {
-        if ($db->signUp("users", $_POST['email'], $_POST['username'], $_POST['password'])) {
-            echo "Successfully signed up.";
-        } else {
-            echo "That email or username is already in use.";
-        }
+function signUp($db, $params) {
+    $email = $db->prepareData($_POST[$params[0]]);
+    $username = $db->prepareData($_POST[$params[1]]);
+    $password = password_hash($_POST[$params[2]], PASSWORD_DEFAULT);
+    
+    $query = "INSERT INTO `users` (`email`, `username`, `password`) VALUES ('{$email}', '{$username}', '{$password}')";
+    
+    if (mysqli_query($db->mysqli, $query)) {
+        echo "Successfully signed up.";
     } else {
-        echo "Error: Could not connect to the Database.";
+        echo "That email or username is already in use.";
     }
-} else {
-    echo "All fields are required.";
 }
 
-?>
+# Check to see if the parameters are set and the database is running
+if (!$db->runChecks($params)) {
+    exit();
+}
+
+signUp($db, $params);
